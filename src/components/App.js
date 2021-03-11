@@ -51,30 +51,9 @@ class App extends Component {
       }
     
     const networkId = await web3.eth.net.getId()
-    //console.log("Network: ", networkId )
+    console.log("Network: ", networkId )
 
-    //const networkData = ""; //colorContract.networks[networkId]
-    //console.log("Color Contract Address: ", networkData ) 
-/*
-    if(networkData) {
-      console.log("we're on the net!")
-      const abi = Color.abi
-      //const address = networkData.address
-      const address = "0xfe24a992a6cc6fab458a5ce655575f464ab35ca4"
-      const contract = new web3.eth.Contract(abi, address)
-      this.setState({ contract })
-      const totalSupply = await contract.methods.totalSupply().call()
-      this.setState({ totalSupply })
-      // Load Colors
-      for (var i = 1; i <= totalSupply; i++) {
-        const color = await contract.methods.colors(i - 1).call()
-        this.setState({
-          colors: [...this.state.colors, color]
-        })
-      }
-    } else {
-      window.alert('Smart contract not deployed to detected network: ', networkId)
-    } //end iffy */
+   
   } //end loadBlockChainData
 
   mint = (color) => {
