@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Web3 from 'web3'
 import './App.css';
+
 import Color from '../abis/Color.json'
 
 class App extends Component {
@@ -28,16 +29,38 @@ class App extends Component {
     // Load account
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
+    console.log("Account: ", accounts[0] )
 
+    console.log("Color Contract: ", Color)
+  
+    const colorContract = new web3.eth.Contract(Color.abi, "0xa528e222279A2A5d773999fD49AfC03352Ad6bFA");
+    console.log("Color Contract: ", colorContract );
+
+    this.setState({ contract: colorContract })
+
+    const totalSupply = await colorContract.methods.totalSupply().call()
+    console.log("Total Supply: ", totalSupply )
+
+    this.setState({ totalSupply })
+      // Load Colors
+      for (var i = 1; i <= totalSupply; i++) {
+        const color = await colorContract.methods.colors(i - 1).call()
+        this.setState({
+          colors: [...this.state.colors, color]
+        })
+      }
+    
     const networkId = await web3.eth.net.getId()
+    //console.log("Network: ", networkId )
 
-    console.log("Network: ", networkId )
-    const networkData = Color.networks[networkId]
-    console.log("Color Contract Address: ", networkData )
+    //const networkData = ""; //colorContract.networks[networkId]
+    //console.log("Color Contract Address: ", networkData ) 
+/*
     if(networkData) {
+      console.log("we're on the net!")
       const abi = Color.abi
-      const address = networkData.address
-      //const address = ""
+      //const address = networkData.address
+      const address = "0xfe24a992a6cc6fab458a5ce655575f464ab35ca4"
       const contract = new web3.eth.Contract(abi, address)
       this.setState({ contract })
       const totalSupply = await contract.methods.totalSupply().call()
@@ -51,8 +74,8 @@ class App extends Component {
       }
     } else {
       window.alert('Smart contract not deployed to detected network: ', networkId)
-    }
-  }
+    } //end iffy */
+  } //end loadBlockChainData
 
   mint = (color) => {
     this.state.contract.methods.mint(color).send({ from: this.state.account })
@@ -69,7 +92,7 @@ class App extends Component {
       account: '',
       contract: null,
       totalSupply: 0,
-      colors: []
+      colors: [],
     }
   }
 
