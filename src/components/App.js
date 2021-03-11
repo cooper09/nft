@@ -30,10 +30,14 @@ class App extends Component {
     this.setState({ account: accounts[0] })
 
     const networkId = await web3.eth.net.getId()
+
+    console.log("Network: ", networkId )
     const networkData = Color.networks[networkId]
+    console.log("Color Contract Address: ", networkData )
     if(networkData) {
       const abi = Color.abi
       const address = networkData.address
+      //const address = ""
       const contract = new web3.eth.Contract(abi, address)
       this.setState({ contract })
       const totalSupply = await contract.methods.totalSupply().call()
@@ -46,7 +50,7 @@ class App extends Component {
         })
       }
     } else {
-      window.alert('Smart contract not deployed to detected network.')
+      window.alert('Smart contract not deployed to detected network: ', networkId)
     }
   }
 
