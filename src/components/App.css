@@ -6,3 +6,11 @@
   border-radius: 50%;
   display: inline-block;
 }
+.gallery {
+  background: pink;
+  padding: 1em;
+}
+.goodie {
+  background: aqua;
+  padding: 1em;
+}
