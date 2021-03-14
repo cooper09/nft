@@ -52,16 +52,15 @@ export const getAccountName = (account) => {
         console.log("Account 4")
         accountName = "Account 4"
       break
-      case '0xf1fF198D27B22EB099D84A065AF434E15Ccc5641':
+      case '0x42977ca2fC4d2E3372a01213c0b8955702E1A3af':
         console.log("Local Ganache Account")
-        accountName = "Local Ganache"
+        accountName = "Local Ganache 9545"
       break
       default:
         accountName = "Not Selected"  
     }//end switch
     return accountName
   }
-
 
   export const getNetworkName = (id) => {
     console.log("getNetworkName: ", id);

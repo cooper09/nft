@@ -3,7 +3,13 @@ import Web3 from 'web3'
 import './App.css';
 import {getAccountData} from '../helpers';
 
-import Color from '../abis/Color.json'
+import Color from '../abis/Color.json';
+import LocalColor from '../abis/LocalColor.json';
+
+// cooper s - remix address
+//const localAddr = '0x7F23f390610DdDF25fe6489FD6cAf317BDb2cD90';
+// truffle address
+const localAddr = '0xE9044577A8014a630f080657F657d57D1F2831C0'; //'0x629C27A1fe256Be0CDA2d88D180e617C90e4f988';
 
 class App extends Component {
 
@@ -26,10 +32,13 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
-    const web3 = window.web3
+
+    console.log("load blockchain: ", window.web3 )
+    const web3 = window.web3;
     // Load account
 
     //cooper s - get  all the account data at once....
+    console.log("Get account data...")
     const accountData = await getAccountData(web3)
     console.log("accountData: ", accountData );
 
@@ -42,21 +51,45 @@ class App extends Component {
     console.log("non-network color contract address: ", Color.address )
     console.log("non-network color contract: ", Object.entries(Color.networks))
 
-
-
         // Identify which network we're on
         let networkId = accountData.networkInfo.id;
         console.log("Current network ID: ", networkId)
         const networkData = ''; //Color.networks[networkId]
         console.log("networkData: ", networkData )
 
+        // working from the local ganache blockchain
         if (networkId === 5777) {
           console.log("create local contract");
 
-        }
-    
+          const colorContract = new web3.eth.Contract(Color.abi, localAddr);
+          console.log("Color Contract: ", colorContract );
+      
+          this.setState({ contract: colorContract })
+          this.setState({contractAddr: colorContract.address})
+
+          console.log("contract methods", this.state.contract.methods );
+
+          let contractName = await colorContract.methods.name().call();
+          console.log("contractName: ", contractName )
+      
+          const totalSupply = await colorContract.methods.totalSupply().call()
+          console.log("Total Supply: ", totalSupply )
+      
+          this.setState({ totalSupply })
+            // Load Colors
+            for (var i = 1; i <= totalSupply; i++) {
+              const color = await colorContract.methods.colors(i - 1).call()
+              this.setState({
+                colors: [...this.state.colors, color]
+              })
+            } 
+
+        }//end ganache network
+
+  // Ropsten Network  
         if (networkId === 3) {
           console.log("create ropsten contract")
+          
           const colorContract = new web3.eth.Contract(Color.abi, "0xa528e222279A2A5d773999fD49AfC03352Ad6bFA");
           console.log("Color Contract: ", colorContract );
       
@@ -72,7 +105,7 @@ class App extends Component {
           this.setState({ totalSupply })
             // Load Colors
             for (var i = 1; i <= totalSupply; i++) {
-              const color = await colorContract.methods.colors(i - 1).call()
+              const color = "TEST"; //await colorContract.methods.colors(i - 1).call()
               this.setState({
                 colors: [...this.state.colors, color]
               })
@@ -80,93 +113,20 @@ class App extends Component {
        
         }//end ropsten contract
 
-    
         if (networkData) {
-
-          const colorContract = new web3.eth.Contract(Color.abi, "0xa528e222279A2A5d773999fD49AfC03352Ad6bFA");
-          console.log("Color Contract: ", colorContract );
-      
-          this.setState({ contract: colorContract })
-          this.setState({contractAddr: colorContract.address})
-      
-          let contractName = await colorContract.methods.name().call();
-          console.log("contractName: ", contractName )
-      
-          const totalSupply = await colorContract.methods.totalSupply().call()
-          console.log("Total Supply: ", totalSupply )
-      
-          this.setState({ totalSupply })
-            // Load Colors
-            for (var i = 1; i <= totalSupply; i++) {
-              const color = await colorContract.methods.colors(i - 1).call()
-              this.setState({
-                colors: [...this.state.colors, color]
-              })
-            }
+        
         }//end iffy 
             
-    //const networkId = await web3.eth.net.getId()
-    //console.log("Network: ", networkId )
-
-    //console.log("Color Contract: ", Color)
-  //if netwworkid = 5777
-  //  then create localhost contract
-  
-  //if newtorkId = 3 (Ropsten)
-  // then create ropsten contract
- /*   const colorContract = new web3.eth.Contract(Color.abi, "0xa528e222279A2A5d773999fD49AfC03352Ad6bFA");
-    console.log("Color Contract: ", colorContract );
-
-    this.setState({ contract: colorContract })
-    this.setState({contractAddr: colorContract.address})
-
-    let contractName = await colorContract.methods.name().call();
-    console.log("contractName: ", contractName )
-
-    const totalSupply = await colorContract.methods.totalSupply().call()
-    console.log("Total Supply: ", totalSupply )
-
-    this.setState({ totalSupply })
-      // Load Colors
-      for (var i = 1; i <= totalSupply; i++) {
-        const color = await colorContract.methods.colors(i - 1).call()
-        this.setState({
-          colors: [...this.state.colors, color]
-        })
-      }
-*/
-
-    //const networkData = ""; //colorContract.networks[networkId]
-    //console.log("Color Contract Address: ", networkData ) 
-/*
-    if(networkData) {
-      console.log("we're on the net!")
-      const abi = Color.abi
-      //const address = networkData.address
-      const address = "0xfe24a992a6cc6fab458a5ce655575f464ab35ca4"
-      const contract = new web3.eth.Contract(abi, address)
-      this.setState({ contract })
-      const totalSupply = await contract.methods.totalSupply().call()
-      this.setState({ totalSupply })
-      // Load Colors
-      for (var i = 1; i <= totalSupply; i++) {
-        const color = await contract.methods.colors(i - 1).call()
-        this.setState({
-          colors: [...this.state.colors, color]
-        })
-      }
-    } else {
-      window.alert('Smart contract not deployed to detected network: ', networkId)
-    } //end iffy */
   } //end loadBlockChainData
 
   mint = (color) => {
+    console.log("Mint some coin buddy: " , color )
     this.state.contract.methods.mint(color).send({ from: this.state.account })
-    .once('receipt', (receipt) => {
+/*    .once('receipt', (receipt) => {
       this.setState({
         colors: [...this.state.colors, color]
       })
-    })
+    }) */
   }
 
   constructor(props) {
