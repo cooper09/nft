@@ -71,6 +71,7 @@ class App extends Component {
 
           let contractName = await colorContract.methods.name().call();
           console.log("contractName: ", contractName )
+          this.setState({contractName})
       
           const totalSupply = await colorContract.methods.totalSupply().call()
           console.log("Total Supply: ", totalSupply )
@@ -78,7 +79,8 @@ class App extends Component {
           this.setState({ totalSupply })
             // Load Colors
             for (var i = 1; i <= totalSupply; i++) {
-              const color = await colorContract.methods.colors(i - 1).call()
+              const color = await colorContract.methods.colors(i - 1).call();
+              console.log("Selected color: ", color )
               this.setState({
                 colors: [...this.state.colors, color]
               })
@@ -122,11 +124,12 @@ class App extends Component {
   mint = (color) => {
     console.log("Mint some coin buddy: " , color )
     this.state.contract.methods.mint(color).send({ from: this.state.account })
-/*    .once('receipt', (receipt) => {
+    .once('receipt', (receipt) => {
+      console.log("here's your receipt...");
       this.setState({
         colors: [...this.state.colors, color]
       })
-    }) */
+    }) 
   }
 
   constructor(props) {
@@ -167,7 +170,9 @@ class App extends Component {
                 <h1>Item #1</h1>
                 <form onSubmit={(event) => {
                   event.preventDefault()
-                  const color = this.color.value
+                  //const color = this.color.value
+                  const color = "#333333";
+                  const item = "Item One";
                   this.mint(color)
                 }}>
 
@@ -214,6 +219,7 @@ class App extends Component {
                 <form onSubmit={(event) => {
                   event.preventDefault()
                   const color = this.color.value
+                  console.log("Submit color value: ", color )
                   this.mint(color)
                 }}>
                 <a
