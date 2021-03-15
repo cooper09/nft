@@ -4,12 +4,10 @@ import './App.css';
 import {getAccountData} from '../helpers';
 
 import Color from '../abis/Color.json';
-import LocalColor from '../abis/LocalColor.json';
 
 // cooper s - remix address
-//const localAddr = '0x7F23f390610DdDF25fe6489FD6cAf317BDb2cD90';
 // truffle address
-const localAddr = '0xE9044577A8014a630f080657F657d57D1F2831C0'; //'0x629C27A1fe256Be0CDA2d88D180e617C90e4f988';
+const localAddr = '0xE9044577A8014a630f080657F657d57D1F2831C0'; 
 
 class App extends Component {
 
