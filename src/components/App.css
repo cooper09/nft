@@ -1,8 +1,32 @@
 /* Styles go here */
+body {
+  font-family: Calibre, Sans-Serif;
+  letter-spacing: 0;
+  color: #1d1e1e;
+  padding: 1em;
+}
+.intro {
+  padding: 1em;
+  border: 1px solid #000;
+}
+.header-font {
+  font-family: Calibre, Sans-Serif;
+  letter-spacing: 0;
+  color: #1d1e1e;
+  font-size: 2em;
+}
 
 .token {
   height: 150px;
   width: 150px;
   border-radius: 50%;
   display: inline-block;
+}
+.gallery {
+  margin: 1em;
+  padding: 1em;
+}
+.goodie {
+  padding: 1em;
+  border: 1px solid #000;
 }
