@@ -267,6 +267,7 @@ class App extends Component {
                   <b>Contract Address: </b> {this.state.contractAddr}
                 </div>
             </div> 
+            <p>credit: Dapp University</p>
         </div>
       </div>
     );
